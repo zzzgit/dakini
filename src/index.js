@@ -280,6 +280,7 @@ export {
 	random,
 	range,
 	shuffle,
+	ensurePath,
 	flipCoin,
 	factorial,
 	getCounter,
