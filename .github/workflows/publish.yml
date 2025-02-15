@@ -17,7 +17,7 @@ jobs:
         uses: EndBug/version-check@v2
         with:
           static-checking: localIsNew
-          file-url: https://unpkg.com/@zzznpm/dakini@latest/package.json
+          file-url: https://unpkg.com/dakini@latest/package.json
       - name: No version update in package.json
         if: steps.check.outputs.changed != 'true'
         run: |
