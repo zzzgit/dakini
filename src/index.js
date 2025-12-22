@@ -1,5 +1,5 @@
-import path from 'path'
-import os from 'os'
+import path from 'node:path'
+import os from 'node:os'
 import { mkdir, readFile } from 'node:fs/promises'
 
 const getQandR = (dividend, divisor)=> {
@@ -54,7 +54,7 @@ const formatTimeRange = (range)=> {
  * @param {*} dir the path to ensure
  * @returns a promise that resolves when the path is ensured
  */
-const ensurePath = (dir)=> {
+const ensureDir = (dir)=> {
 	return mkdir(dir, { recursive: true })
 }
 
@@ -72,7 +72,7 @@ const flipCoin = ()=> {
  * @returns a promise that resolves with the content of the file
  */
 const readFromFile = (file)=> {
-	return ensurePath(path.resolve(file, '../')).then(()=> {
+	return ensureDir(path.resolve(file, '../')).then(()=> {
 		return readFile(file, 'utf8')
 	})
 }
@@ -209,50 +209,6 @@ const sleep = (milliseconds)=> {
 }
 
 /**
- * Get the data directory for the given application, based on the platform
- * @param {*} appName the name of the application
- * @returns the data directory for the given application
- */
-const getDataDir = (appName)=> {
-	if(typeof appName !== 'string'){
-		throw new Error('appName must be a string')
-	}
-	const homeDir = os.homedir()
-	switch (process.platform){
-	case 'linux':
-		return path.join(homeDir, '.local', 'share', appName)
-	case 'darwin':
-		return path.join(homeDir, 'Library', 'Application Support', appName)
-	case 'win32':
-		return path.join(process.env.APPDATA + '', appName)
-	default:
-		throw new Error('Unsupported platform: ' + process.platform)
-	}
-}
-
-/**
- * Get the configuration directory for the given application, based on the platform
- * @param {*} appName the name of the application
- * @returns the configuration directory for the given application
- */
-const getConfigDir = (appName)=> {
-	if(typeof appName !== 'string'){
-		throw new Error('appName must be a string')
-	}
-	const homeDir = os.homedir()
-	switch (process.platform){
-	case 'linux':
-		return path.join(homeDir, '.config', appName)
-	case 'darwin':
-		return path.join(homeDir, 'Library', 'Preferences', appName)
-	case 'win32':
-		return path.join(homeDir, 'AppData', 'Local')
-	default:
-		throw new Error('Unsupported platform: ' + process.platform)
-	}
-}
-
-/**
  * Get the username of the current user, based on the platform
  * @returns the username of the current user
  */
@@ -280,13 +236,11 @@ export {
 	random,
 	range,
 	shuffle,
-	ensurePath,
+	ensureDir,
 	flipCoin,
 	factorial,
 	getCounter,
 	chance,
 	sleep,
-	getDataDir,
 	getUsername,
-	getConfigDir,
 }
