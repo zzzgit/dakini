@@ -1,6 +1,6 @@
 {
   "name": "dakini",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "utils for node.js",
   "type": "module",
   "main": "src/index.js",
