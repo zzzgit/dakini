@@ -2,6 +2,9 @@ import path from 'node:path'
 import os from 'node:os'
 import { mkdir, readFile } from 'node:fs/promises'
 
+const homeDir = os.homedir()
+const platform = os.platform()
+
 const getQandR = (dividend, divisor)=> {
 	const remainder = dividend % divisor
 	const quotient = (dividend - remainder) / divisor
@@ -64,6 +67,119 @@ const ensureDir = (dir)=> {
  */
 const flipCoin = ()=> {
 	return !!(random(1000) % 2)
+}
+
+const _getXDGConfigHomeLinux = ()=> {
+	const xdgConfigHome = process.env.XDG_CONFIG_HOME
+	if (xdgConfigHome && xdgConfigHome.trim()){
+		return xdgConfigHome
+	}
+	return path.join(homeDir, '.config')
+}
+
+const _getXDGConfigHomeMac = ()=> {
+	const xdgConfigHome = process.env.XDG_CONFIG_HOME
+	if (xdgConfigHome && xdgConfigHome.trim()){
+		return xdgConfigHome
+	}
+	return path.join(homeDir, 'Library', 'Application Support')
+}
+
+const _getAppDataDirWin = ()=> {
+	return process.env.APPDATA
+}
+
+const _getXDGDataHomeLinux = ()=> {
+	const xdgDataHome = process.env.XDG_DATA_HOME
+	if (xdgDataHome && xdgDataHome.trim()){
+		return xdgDataHome
+	}
+	return path.join(homeDir, '.local', 'share')
+}
+
+const _getXDGDataHomeMac = ()=> {
+	const xdgDataHome = process.env.XDG_DATA_HOME
+	if (xdgDataHome && xdgDataHome.trim()){
+		return xdgDataHome
+	}
+	return path.join(homeDir, 'Library', 'Application Support')
+}
+
+const _getLocalAppDataDirWin = ()=> {
+	return process.env.LOCALAPPDATA
+}
+
+const _getCacheDirLinux = ()=> {
+	const xdgCacheHome = process.env.XDG_CACHE_HOME
+	if (xdgCacheHome && xdgCacheHome.trim()){
+		return xdgCacheHome
+	}
+	return path.join(homeDir, '.cache')
+}
+
+const _getCacheDirMac = ()=> {
+	return path.join(homeDir, 'Library', 'Caches')
+}
+
+const _getCacheDirWin = ()=> {
+	// TEMP
+	return path.join(_getLocalAppDataDirWin(), 'Cache')
+}
+
+const _getStateDirLinux = ()=> {
+	const xdgStateHome = process.env.XDG_STATE_HOME
+	if (xdgStateHome && xdgStateHome.trim()){
+		return xdgStateHome
+	}
+	return path.join(homeDir, '.local', 'state')
+}
+
+const _getStateDirMac = ()=> {
+	return path.join(homeDir, 'Library', 'Application Support')
+}
+
+const _getStateDirWin = ()=> {
+	return _getLocalAppDataDirWin()
+}
+
+const getCacheDir = (app)=> {
+	if (platform === 'win32'){
+		return path.join(_getCacheDirWin(), app)
+	}
+	if (platform === 'darwin'){
+		return path.join(_getCacheDirMac(), app)
+	}
+	return path.join(_getCacheDirLinux(), app)
+}
+
+const getStateDir = (app)=> {
+	if (platform === 'win32'){
+		return path.join(_getStateDirWin(), app)
+	}
+	if (platform === 'darwin'){
+		return path.join(_getStateDirMac(), app)
+	}
+	return path.join(_getStateDirLinux(), app)
+}
+
+const getConfigDir = (app)=> {
+	if (platform === 'win32'){
+		return path.join(_getAppDataDirWin(), app)
+	}
+	if (platform === 'darwin'){
+		return path.join(_getXDGConfigHomeMac(), app)
+	}
+	return path.join(_getXDGConfigHomeLinux(), app)
+}
+
+const getDataDir = (app)=> {
+	if (platform === 'win32'){
+		return path.join(_getLocalAppDataDirWin(), app)
+	}
+	if (platform === 'darwin'){
+		return path.join(_getXDGDataHomeMac(), app)
+	}
+	return path.join(_getXDGDataHomeLinux(), app)
 }
 
 /**
@@ -243,4 +359,8 @@ export {
 	chance,
 	sleep,
 	getUsername,
+	getConfigDir,
+	getDataDir,
+	getStateDir,
+	getCacheDir,
 }
